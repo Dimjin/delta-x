@@ -1,0 +1,89 @@
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+
+-- Создаём окно GUI
+local Window = OrionLib:MakeWindow({
+    Name = "Delta X GUI",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "DeltaXGUI"
+})
+
+-- Добавляем надпись сверху
+local TitleLabel = Window:MakeTab({
+    Name = "Dimjin Hub",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Функция для создания эффекта радужного контура
+local function RGBLoop()
+    local counter = 0
+    while task.wait(0.1) do
+        counter = (counter + 1) % 360
+        local color = Color3.fromHSV(counter / 360, 1, 1)
+        if Window and Window.MainFrame then
+            Window.MainFrame.BorderColor3 = color
+        end
+    end
+end
+spawn(RGBLoop)
+
+-- Добавляем кнопку сворачивания
+local Minimized = false
+local MinimizeButton = Window:MakeTab({
+    Name = "⚙️ Settings",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+MinimizeButton:AddButton({
+    Name = "Свернуть/Развернуть",
+    Callback = function()
+        Minimized = not Minimized
+        if Minimized then
+            OrionLib:Destroy()
+        else
+            OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source"))()
+        end
+    end
+})
+
+-- Пример вкладки с кнопкой
+local MainTab = Window:MakeTab({
+    Name = "Главная",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Бесконечные прыжки
+local InfiniteJumpConnection
+MainTab:AddButton({
+    Name = "Бесконечные прыжки",
+    Callback = function()
+        local plr = game:GetService("Players").LocalPlayer
+        if InfiniteJumpConnection then InfiniteJumpConnection:Disconnect() end
+        InfiniteJumpConnection = game:GetService("UserInputService").JumpRequest:Connect(function()
+            if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                plr.Character.Humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+            end
+        end)
+    end
+})
+
+-- Увеличение скорости
+MainTab:AddSlider({
+    Name = "Скорость",
+    Min = 16,
+    Max = 100,
+    Default = 16,
+    Increment = 1,
+    ValueName = "Speed",
+    Callback = function(value)
+        local plr = game:GetService("Players").LocalPlayer
+        if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+            plr.Character.Humanoid.WalkSpeed = value
+        end
+    end
+})
+
+OrionLib:Init()
