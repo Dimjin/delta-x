@@ -1,0 +1,180 @@
+-- Получаю необходимые сервисы
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local StarterGui = game:GetService("StarterGui")
+
+local player = Players.LocalPlayer
+
+-- Создаю ScreenGui
+local gui = Instance.new("ScreenGui")
+gui.Name = "DmjnHub"
+gui.ResetOnSpawn = false
+gui.Parent = game.CoreGui
+
+-- Основной фрейм
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 600, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+mainFrame.Parent = gui
+
+-- Левая панель
+local sidePanel = Instance.new("Frame")
+sidePanel.Size = UDim2.new(0, 150, 1, 0)
+sidePanel.Position = UDim2.new(0, 0, 0, 0)
+sidePanel.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+sidePanel.BorderSizePixel = 0
+sidePanel.Name = "SidePanel"
+sidePanel.Parent = mainFrame
+
+-- Надпись "Troll"
+local trollLabel = Instance.new("TextLabel")
+trollLabel.Size = UDim2.new(1, 0, 0, 60)
+trollLabel.Position = UDim2.new(0, 0, 0, 220)
+trollLabel.BackgroundTransparency = 1
+trollLabel.Text = "Troll"
+trollLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+trollLabel.Font = Enum.Font.SourceSansBold
+trollLabel.TextSize = 40
+trollLabel.Parent = sidePanel
+
+-- Кнопка "ТГ"
+local tgButton = Instance.new("TextButton")
+tgButton.Size = UDim2.new(0.6, 0, 0, 40)
+tgButton.Position = UDim2.new(0.2, 0, 0, 290)
+tgButton.BackgroundTransparency = 1
+tgButton.Text = "ТГ"
+tgButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+tgButton.Font = Enum.Font.SourceSansBold
+tgButton.TextSize = 40
+tgButton.Parent = sidePanel
+
+-- Верхняя панель
+local topBar = Instance.new("Frame")
+topBar.Size = UDim2.new(1, 0, 0, 60)
+topBar.Position = UDim2.new(0, 0, 0, 0)
+topBar.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+topBar.BorderSizePixel = 0
+topBar.Parent = mainFrame
+
+-- Надпись "Dmjn Hub"
+local hubLabel = Instance.new("TextLabel")
+hubLabel.Size = UDim2.new(0, 300, 1, 0)
+hubLabel.Position = UDim2.new(0, 160, 0, 0)
+hubLabel.BackgroundTransparency = 1
+hubLabel.Text = "Dmjn Hub"
+hubLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+hubLabel.Font = Enum.Font.SourceSansBold
+hubLabel.TextSize = 40
+hubLabel.TextXAlignment = Enum.TextXAlignment.Left
+hubLabel.Parent = topBar
+
+-- Кнопка свернуть
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Size = UDim2.new(0, 40, 0, 40)
+minimizeButton.Position = UDim2.new(1, -90, 0.5, -20)
+minimizeButton.BackgroundTransparency = 1
+minimizeButton.Text = "—"
+minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+minimizeButton.Font = Enum.Font.SourceSansBold
+minimizeButton.TextSize = 40
+minimizeButton.Parent = topBar
+
+-- Кнопка закрытия
+local closeButton = Instance.new("TextButton")
+closeButton.Size = UDim2.new(0, 40, 0, 40)
+closeButton.Position = UDim2.new(1, -40, 0.5, -20)
+closeButton.BackgroundTransparency = 1
+closeButton.Text = "x"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.Font = Enum.Font.SourceSansBold
+closeButton.TextSize = 40
+closeButton.Parent = topBar
+
+-- Закрытие
+closeButton.MouseButton1Click:Connect(function()
+	gui.Enabled = false
+	StarterGui:SetCore("SendNotification", {
+		Title = "Уведомление",
+		Text = "Чтобы снова включить GUI, нажми на RightShift.",
+		Duration = 5
+	})
+end)
+
+-- Сворачивание
+local isMinimized = false
+minimizeButton.MouseButton1Click:Connect(function()
+	isMinimized = not isMinimized
+	for _, v in ipairs(mainFrame:GetChildren()) do
+		if v ~= topBar then
+			v.Visible = not isMinimized
+		end
+	end
+	mainFrame.BackgroundTransparency = isMinimized and 1 or 0
+end)
+
+-- Правый шифт
+UserInputService.InputBegan:Connect(function(input, gp)
+	if input.KeyCode == Enum.KeyCode.RightShift then
+		gui.Enabled = not gui.Enabled
+	end
+end)
+
+-- ТГ
+tgButton.MouseButton1Click:Connect(function()
+	setclipboard("https://t.me/rbx_delta_cheats_mobile")
+	StarterGui:SetCore("SendNotification", {
+		Title = "Dmjn Hub",
+		Text = "Ссылка на тгк скопирована!",
+		Duration = 4
+	})
+end)
+
+-- Кнопки снизу
+local buttonData = {
+	{name = "Ебать", r6 = "https://pastebin.com/raw/aPSHMV6K", r15 = "https://pastebin.com/raw/1ePMTt9n"},
+	{name = "Ебаться", r6 = "https://pastebin.com/raw/zHbw7ND1", r15 = "https://pastebin.com/raw/7hvcjDnW"},
+	{name = "Выебать в рот", r6 = "https://pastebin.com/raw/SymCfnAW", r15 = "https://pastebin.com/raw/p8yxRfr4"},
+	{name = "Отсосать", r6 = "https://pastebin.com/raw/FPu4e2Qh", r15 = "https://pastebin.com/raw/DyPP2tAF"},
+	{name = "Дрочить", r6 = "https://pastefy.app/wa3v2Vgm/raw", r15 = "https://pastefy.app/YZoglOyJ/raw"}
+}
+
+local function executeScript(url)
+	local success, result = pcall(function()
+		return game:HttpGet(url)
+	end)
+
+	if success then
+		local func = loadstring(result)
+		if func then
+			func()
+		end
+	end
+end
+
+for i, data in ipairs(buttonData) do
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(0, 250, 0, 40)
+	btn.Position = UDim2.new(0, 180, 0, 80 + (i - 1) * 45)
+	btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	btn.Text = data.name
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Font = Enum.Font.SourceSansBold
+	btn.TextSize = 18
+	btn.Parent = mainFrame
+
+	local corner = Instance.new("UICorner", btn)
+	corner.CornerRadius = UDim.new(0, 6)
+
+	btn.MouseButton1Click:Connect(function()
+		local character = player.Character
+		local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+		local rigType = humanoid and humanoid.RigType or Enum.HumanoidRigType.R15
+		local url = (rigType == Enum.HumanoidRigType.R15) and data.r15 or data.r6
+		executeScript(url)
+	end)
+end
