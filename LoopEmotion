@@ -1,0 +1,147 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local StarterGui = game:GetService("StarterGui")
+
+local player = Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
+
+-- GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "DmjnHub"
+
+local mainBtn = Instance.new("TextButton", gui)
+mainBtn.Size = UDim2.new(0, 80, 0, 30)
+mainBtn.Position = UDim2.new(0, 10, 0.5, -15)
+mainBtn.Text = "Main"
+mainBtn.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainBtn.TextColor3 = Color3.new(1, 1, 1)
+mainBtn.Font = Enum.Font.SourceSansBold
+mainBtn.TextSize = 18
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 200, 0, 150)
+frame.Position = UDim2.new(0, 100, 0.5, -75)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.Visible = false
+
+mainBtn.MouseButton1Click:Connect(function()
+	frame.Visible = not frame.Visible
+end)
+
+-- Loop toggle
+local loopLabel = Instance.new("TextLabel", frame)
+loopLabel.Position = UDim2.new(0, 10, 0, 10)
+loopLabel.Size = UDim2.new(0, 120, 0, 30)
+loopLabel.Text = "Loop Emotion"
+loopLabel.TextColor3 = Color3.new(1, 1, 1)
+loopLabel.BackgroundTransparency = 1
+loopLabel.Font = Enum.Font.SourceSansBold
+loopLabel.TextSize = 18
+loopLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local loopBtn = Instance.new("TextButton", frame)
+loopBtn.Position = UDim2.new(0, 130, 0, 10)
+loopBtn.Size = UDim2.new(0, 50, 0, 30)
+loopBtn.Text = "OFF"
+loopBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+loopBtn.TextColor3 = Color3.new(1, 1, 1)
+loopBtn.Font = Enum.Font.SourceSansBold
+loopBtn.TextSize = 18
+
+local looping = false
+loopBtn.MouseButton1Click:Connect(function()
+	looping = not looping
+	if looping then
+		loopBtn.Text = "ON"
+		loopBtn.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+	else
+		loopBtn.Text = "OFF"
+		loopBtn.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+	end
+end)
+
+-- Emotion Speed
+local speedLabel = Instance.new("TextLabel", frame)
+speedLabel.Position = UDim2.new(0, 10, 0, 50)
+speedLabel.Size = UDim2.new(0, 120, 0, 30)
+speedLabel.Text = "Emotion Speed"
+speedLabel.TextColor3 = Color3.new(1, 1, 1)
+speedLabel.BackgroundTransparency = 1
+speedLabel.Font = Enum.Font.SourceSansBold
+speedLabel.TextSize = 18
+speedLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+local speedBox = Instance.new("TextBox", frame)
+speedBox.Position = UDim2.new(0, 130, 0, 50)
+speedBox.Size = UDim2.new(0, 50, 0, 30)
+speedBox.Text = "1"
+speedBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+speedBox.TextColor3 = Color3.new(1, 1, 1)
+speedBox.Font = Enum.Font.SourceSansBold
+speedBox.TextSize = 18
+
+local emotionSpeed = 1
+speedBox.FocusLost:Connect(function()
+	local val = tonumber(speedBox.Text)
+	if val then
+		emotionSpeed = val
+	end
+end)
+
+-- Telegram button
+local tgBtn = Instance.new("TextButton", gui)
+tgBtn.Size = UDim2.new(0, 60, 0, 30)
+tgBtn.Position = UDim2.new(0, 10, 1, -40)
+tgBtn.Text = "ТГ"
+tgBtn.BackgroundColor3 = Color3.fromRGB(0, 132, 255)
+tgBtn.TextColor3 = Color3.new(1, 1, 1)
+tgBtn.Font = Enum.Font.SourceSansBold
+tgBtn.TextSize = 20
+
+tgBtn.MouseButton1Click:Connect(function()
+	setclipboard("https://t.me/rbx_delta_cheats_mobile")
+	StarterGui:SetCore("SendNotification", {
+		Title = "Dmjn Hub",
+		Text = "Ссылка на ТГ скопирована!",
+		Duration = 4
+	})
+end)
+
+-- Зацикливание эмоций
+local lastTrack = nil
+local lastAnimId = nil
+local reloopTime = 0.1
+
+RunService.Heartbeat:Connect(function()
+	if not looping then
+		lastTrack = nil
+		lastAnimId = nil
+		return
+	end
+
+	local playingTracks = animator:GetPlayingAnimationTracks()
+
+	-- Запоминаем новую эмоцию
+	for _, track in pairs(playingTracks) do
+		if track.Animation and track.Animation.AnimationId ~= "" then
+			if not lastTrack or track.Animation.AnimationId ~= lastAnimId then
+				lastTrack = track
+				lastAnimId = track.Animation.AnimationId
+				track:AdjustSpeed(emotionSpeed)
+			end
+		end
+	end
+
+	-- Если трек завершился — перезапускаем
+	if lastTrack and not lastTrack.IsPlaying then
+		local anim = Instance.new("Animation")
+		anim.AnimationId = lastAnimId
+		local newTrack = animator:LoadAnimation(anim)
+		newTrack:Play()
+		newTrack:AdjustSpeed(emotionSpeed)
+		lastTrack = newTrack
+		wait(reloopTime)
+	end
+end)
