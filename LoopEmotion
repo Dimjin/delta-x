@@ -34,7 +34,7 @@ end)
 local loopLabel = Instance.new("TextLabel", frame)
 loopLabel.Position = UDim2.new(0, 10, 0, 10)
 loopLabel.Size = UDim2.new(0, 120, 0, 30)
-loopLabel.Text = "Loop Emotion"
+loopLabel.Text = "Mode:"
 loopLabel.TextColor3 = Color3.new(1, 1, 1)
 loopLabel.BackgroundTransparency = 1
 loopLabel.Font = Enum.Font.SourceSansBold
@@ -66,7 +66,7 @@ end)
 local speedLabel = Instance.new("TextLabel", frame)
 speedLabel.Position = UDim2.new(0, 10, 0, 50)
 speedLabel.Size = UDim2.new(0, 120, 0, 30)
-speedLabel.Text = "Emotion Speed"
+speedLabel.Text = "Emotion Speed:"
 speedLabel.TextColor3 = Color3.new(1, 1, 1)
 speedLabel.BackgroundTransparency = 1
 speedLabel.Font = Enum.Font.SourceSansBold
