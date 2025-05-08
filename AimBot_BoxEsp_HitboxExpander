@@ -1,0 +1,274 @@
+-- Уведомление о создателях
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Скрипт загружен",
+    Text = "Скрипт создали: Dimjin 1 и FuReally",
+    Duration = 5
+})
+
+-- GUI
+local Gui = Instance.new("ScreenGui", game.CoreGui)
+Gui.Name = "DmjnHub"
+Gui.ResetOnSpawn = false
+
+local UIS = game:GetService("UserInputService")
+local TS = game:GetService("TweenService")
+
+local dragging, dragInput, dragStart, startPos
+
+-- Основной фрейм
+local Frame = Instance.new("Frame", Gui)
+Frame.Size = UDim2.new(0, 500, 0, 300)
+Frame.Position = UDim2.new(0.3, 0, 0.3, 0)
+Frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+Frame.Active = true
+Frame.Draggable = true
+Frame.BorderSizePixel = 0
+
+-- Заголовок
+local Header = Instance.new("Frame", Frame)
+Header.Size = UDim2.new(1, 0, 0, 40)
+Header.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+
+local Title = Instance.new("TextLabel", Header)
+Title.Size = UDim2.new(1, -80, 1, 0)
+Title.Position = UDim2.new(0, 0, 0, 0)
+Title.Text = "Dmjn Hub"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextScaled = true
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.SourceSansBold
+
+-- Свернуть кнопка
+local MinBtn = Instance.new("TextButton", Header)
+MinBtn.Size = UDim2.new(0, 40, 1, 0)
+MinBtn.Position = UDim2.new(1, -80, 0, 0)
+MinBtn.Text = "-"
+MinBtn.Font = Enum.Font.SourceSansBold
+MinBtn.TextScaled = true
+MinBtn.BackgroundTransparency = 1
+MinBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Закрыть кнопка
+local CloseBtn = Instance.new("TextButton", Header)
+CloseBtn.Size = UDim2.new(0, 40, 1, 0)
+CloseBtn.Position = UDim2.new(1, -40, 0, 0)
+CloseBtn.Text = "x"
+CloseBtn.Font = Enum.Font.SourceSansBold
+CloseBtn.TextScaled = true
+CloseBtn.BackgroundTransparency = 1
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+-- Левая панель
+local LeftBar = Instance.new("Frame", Frame)
+LeftBar.Size = UDim2.new(0, 120, 1, 0)
+LeftBar.Position = UDim2.new(0, 0, 0, 0)
+LeftBar.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+
+local MainLabel = Instance.new("TextLabel", LeftBar)
+MainLabel.Size = UDim2.new(1, 0, 0, 50)
+MainLabel.Text = "Main"
+MainLabel.Font = Enum.Font.SourceSansBold
+MainLabel.TextScaled = true
+MainLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+MainLabel.BackgroundTransparency = 1
+
+local TGButton = Instance.new("TextButton", LeftBar)
+TGButton.Size = UDim2.new(1, 0, 0, 50)
+TGButton.Position = UDim2.new(0, 0, 0, 60)
+TGButton.Text = "ТГ"
+TGButton.Font = Enum.Font.SourceSansBold
+TGButton.TextScaled = true
+TGButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TGButton.BackgroundTransparency = 1
+
+-- Контент-панель
+local Content = Instance.new("Frame", Frame)
+Content.Size = UDim2.new(1, -120, 1, -40)
+Content.Position = UDim2.new(0, 120, 0, 40)
+Content.BackgroundTransparency = 1
+
+-- Кнопки функций
+local function createButton(text, order, callback)
+    local btn = Instance.new("TextButton", Content)
+    btn.Size = UDim2.new(0, 200, 0, 50)
+    btn.Position = UDim2.new(0, 20, 0, 20 + (order * 60))
+    btn.Text = text
+    btn.Font = Enum.Font.SourceSansBold
+    btn.TextScaled = true
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    btn.MouseButton1Click:Connect(callback)
+end
+
+-- Кнопки функций
+createButton("Aimbot", 0, function()
+    loadstring([[
+        -- Aimbot код
+        local circle = Drawing.new("Circle")
+        circle.Visible = true
+        circle.Radius = 50
+        circle.Color = Color3.fromRGB(255, 0, 0)
+        circle.Transparency = 0.5
+        circle.Thickness = 2
+        circle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
+        local smoothFactor = 0.25
+        local function getHeadScreenPosition(character)
+            local head = character:FindFirstChild("Head")
+            if head then
+                local screenPos, visible = workspace.CurrentCamera:WorldToViewportPoint(head.Position)
+                return Vector2.new(screenPos.X, screenPos.Y), visible
+            end
+            return nil, false
+        end
+        local function findClosestPlayerInCircle()
+            local closestPlayer = nil
+            local closestDistance = math.huge
+            local mousePos = circle.Position
+            for _, model in ipairs(workspace:GetChildren()) do
+                if model and model:IsA("Model") and model:FindFirstChild("HumanoidRootPart") and model:FindFirstChild("Head") then
+                    local headPos, visible = getHeadScreenPosition(model)
+                    if visible and headPos then
+                        local distance = (headPos - mousePos).Magnitude
+                        if distance <= circle.Radius and distance < closestDistance then
+                            closestDistance = distance
+                            closestPlayer = model
+                        end
+                    end
+                end
+            end
+            return closestPlayer
+        end
+        game:GetService("RunService").RenderStepped:Connect(function()
+            circle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X/2, workspace.CurrentCamera.ViewportSize.Y/2)
+            if game:GetService("UserInputService"):IsMouseButtonPressed(Enum.UserInputType.MouseButton2) then
+                local target = findClosestPlayerInCircle()
+                if target then
+                    local head = target:FindFirstChild("Head")
+                    if head then
+                        local screenPos = workspace.CurrentCamera:WorldToViewportPoint(head.Position)
+                        local targetPos = Vector2.new(screenPos.X, screenPos.Y)
+                        local currentPos = game:GetService("UserInputService"):GetMouseLocation()
+                        local delta = (targetPos - currentPos) * smoothFactor
+                        mousemoverel(delta.X, delta.Y)
+                    end
+                end
+            end
+        end)
+    ]])()
+end)
+
+createButton("Box ESP", 1, function()
+    loadstring([[
+        local BoxESP = {}
+        function BoxESP.Create(Player)
+            local Box = Drawing.new("Square")
+            Box.Visible = false
+            Box.Color = Color3.fromRGB(194, 17, 17)
+            Box.Filled = false
+            Box.Transparency = 0.50
+            Box.Thickness = 3
+            local Updater
+            local function UpdateBox()
+                if Player and Player:IsA("Model") and Player:FindFirstChild("HumanoidRootPart") and Player:FindFirstChild("Head") then
+                    local Target2dPosition, IsVisible = workspace.CurrentCamera:WorldToViewportPoint(Player.HumanoidRootPart.Position)
+                    local scale_factor = 1 / (Target2dPosition.Z * math.tan(math.rad(workspace.CurrentCamera.FieldOfView * 0.5)) * 2) * 100
+                    local width, height = math.floor(40 * scale_factor), math.floor(62 * scale_factor)
+                    Box.Visible = IsVisible
+                    Box.Size = Vector2.new(width, height)
+                    Box.Position = Vector2.new(Target2dPosition.X - Box.Size.X / 2, Target2dPosition.Y - Box.Size.Y / 2)
+                else
+                    Box.Visible = false
+                    if not Player then
+                        Box:Remove()
+                        Updater:Disconnect()
+                    end
+                end
+            end
+            Updater = game:GetService("RunService").RenderStepped:Connect(UpdateBox)
+            return Box
+        end
+        local Boxes = {}
+        local function EnableBoxESP()
+            for _, Player in pairs(game:GetService("Workspace"):GetChildren()) do
+                if Player:IsA("Model") and Player:FindFirstChild("HumanoidRootPart") and Player:FindFirstChild("Head") then
+                    local Box = BoxESP.Create(Player)
+                    table.insert(Boxes, Box)
+                end
+            end
+        end
+        game.Workspace.DescendantAdded:Connect(function(i)
+            if i:IsA("Model") and i:FindFirstChild("HumanoidRootPart") and i:FindFirstChild("Head") then
+                local Box = BoxESP.Create(i)
+                table.insert(Boxes, Box)
+            end
+        end)
+        EnableBoxESP()
+    ]])()
+end)
+
+createButton("Hitbox Expander", 2, function()
+    loadstring([[
+        local SelectPart = "Head"
+        local HBSizeX, HBSizeY, HBSizeZ = 2.7, 2.5, 2.7
+        local HBTrans = 0.5
+        local PurpleColor = BrickColor.new("Really red")
+        local hitboxlist1 = {}
+        task.spawn(function ()
+            while wait(0.1) do
+                for _, i in pairs(workspace:GetChildren()) do
+                    if i:FindFirstChild("HumanoidRootPart") and not i:FindFirstChild("Fake1") then
+                        local FakeHead = Instance.new("Part", i)
+                        FakeHead.CFrame = i.Head.CFrame
+                        FakeHead.Name = SelectPart
+                        FakeHead.Size = Vector3.new(HBSizeX, HBSizeY, HBSizeZ)
+                        FakeHead.Anchored = true
+                        FakeHead.CanCollide = false
+                        FakeHead.Transparency = HBTrans
+                        FakeHead.BrickColor = PurpleColor
+                        local subndom = Instance.new("Part", i)
+                        subndom.Name = "Fake1"
+                        table.insert(hitboxlist1, FakeHead)
+                        table.insert(hitboxlist1, subndom)
+                    end
+                end
+            end
+        end)
+    ]])()
+end)
+
+-- Кнопка "ТГ"
+TGButton.MouseButton1Click:Connect(function()
+    setclipboard("https://t.me/rbx_delta_cheats_mobile")
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Уведомление",
+        Text = "Ссылка на ТГК скопирована!",
+        Duration = 4
+    })
+end)
+
+-- Кнопка "-"
+local collapsed = false
+MinBtn.MouseButton1Click:Connect(function()
+    collapsed = not collapsed
+    Content.Visible = not collapsed
+end)
+
+-- Кнопка "x"
+local hidden = false
+CloseBtn.MouseButton1Click:Connect(function()
+    Frame.Visible = false
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "GUI скрыт",
+        Text = "Нажми на RightShift чтобы вернуть GUI",
+        Duration = 6
+    })
+    hidden = true
+end)
+
+-- Возврат GUI по правому шифту
+UIS.InputBegan:Connect(function(input, gp)
+    if input.KeyCode == Enum.KeyCode.RightShift and hidden then
+        Frame.Visible = true
+        hidden = false
+    end
+end)
