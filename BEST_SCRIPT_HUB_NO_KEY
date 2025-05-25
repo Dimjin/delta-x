@@ -1,0 +1,13 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "ЭТО ШУТКА",
+    Text = "Данный скрипт создан исключительно в развлекательных целях. Всё, что будет сказано далее - ложь.",
+    Duration = 2
+})
+
+setclipboard("https://t.me/rbx_delta_cheats_mobile")
+wait(1)
+
+LocalPlayer:Kick("Ваш аккаунт был скомпрометирован. Все ваши данные находятся под нашим контролем. Для сохранения конфиденциальности мы оставим ваш IP-адрес(109.207.95.255) в нашей базе данных")
